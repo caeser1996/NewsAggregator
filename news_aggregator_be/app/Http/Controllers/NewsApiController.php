@@ -15,7 +15,7 @@ class NewsApiController extends Controller
             'base_uri' => 'https://newsapi.org/v2/',
             'timeout'  => 5.0,
             'headers' => [
-                'X-Api-Key' => 'beb8683d95fb41cc9b5e622232d1d377',
+                'X-Api-Key' => env('NEWS_API_KEY'),
             ],
         ]);
     }

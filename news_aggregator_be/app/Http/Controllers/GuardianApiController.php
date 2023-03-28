@@ -15,7 +15,7 @@ class GuardianApiController extends Controller
             'base_uri' => 'https://content.guardianapis.com/',
             'timeout'  => 5.0,
             'headers' => [
-                'api-key' => 'dc4c08f9-1639-4fa0-812b-efcc7ddf7df0',
+                'api-key' => env('GUARDIAN_API_KEY'),
             ],
         ]);
     }
