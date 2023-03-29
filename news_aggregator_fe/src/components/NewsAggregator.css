@@ -1,0 +1,36 @@
+.news-aggregator {
+    margin-top: 50px;
+    }
+    
+    .list-group-item {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dee2e6;
+    }
+    
+    .list-group-item:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    }
+    
+    .list-group-item a {
+    color: #007bff;
+    text-decoration: none;
+    }
+    
+    .list-group-item a:hover {
+    text-decoration: underline;
+    }
+    
+    .form-group {
+    margin-bottom: 20px;
+    }
+    
+    .form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    }
+    
+    .form-group select {
+    width: 100%;
+    }

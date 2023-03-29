@@ -28,7 +28,6 @@ Route::group([
     Route::get('/news/search', [NewsController::class, 'search']);
 });
 Route::group([
-    'middleware' => 'api',
     'prefix' => 'news'
 ], function ($router) {
     Route::get('/search', [NewsController::class, 'search']);

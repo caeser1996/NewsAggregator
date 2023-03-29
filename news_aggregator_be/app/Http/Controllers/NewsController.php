@@ -7,6 +7,7 @@ use App\Http\Controllers\NewsApiController;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 
+
 class NewsController extends Controller
 {
     public function search(Request $request)
@@ -74,19 +75,7 @@ class NewsController extends Controller
     {
         $provider = $request->get('provider');
 
-        if ($provider == 'newsapi') {
-            $url = 'https://newsapi.org/v2/top-headlines';
-            $params = [
-                'apiKey' => env('NEWS_API_KEY'),
-                'language' => 'en',
-            ];
-            $mapping = function ($item) {
-                return [
-                    'id' => $item->category,
-                    'name' => ucfirst($item->category),
-                ];
-            };
-        } else if ($provider == 'guardian') {
+     if ($provider == 'guardian') {
             $url = 'https://content.guardianapis.com/sections';
             $params = [
                 'api-key' => env('GUARDIAN_API_KEY'),
@@ -97,17 +86,37 @@ class NewsController extends Controller
                     'name' => $item->webTitle,
                 ];
             };
-        } else {
-            return response()->json(['message' => 'Invalid API provider']);
+            $client = new Client(['base_uri' => $url]);
+            $response = $client->request('GET', '', ['query' => $params]);
+            $data = json_decode($response->getBody()->getContents());
+            $items = array_map($mapping, $data->response->results);
         }
 
-        $client = new Client(['base_uri' => $url]);
-        $response = $client->request('GET', '', ['query' => $params]);
-        $data = json_decode($response->getBody()->getContents());
+       
+        if ($provider == 'newsapi') {
+            $mapping = function ($item) {
+                return [
+                    'id' => $item,
+                    'name' => $item,
+                ];
+            };
+            $data = [
+                'business',
+                'entertainment',
+                'general',
+                'health',
+                'science',
+                'sports',
+                'technology',
+              ];
+              $items = array_map($mapping, $data);
+        } 
 
-        $items = array_map($mapping, $data->articles ?? $data->response->results);
+        
+
 
         $items = array_unique($items, SORT_REGULAR);
+        
 
         return response()->json(['categories' => $items]);
     }
