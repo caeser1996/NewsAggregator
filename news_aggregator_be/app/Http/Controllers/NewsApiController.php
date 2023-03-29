@@ -26,6 +26,8 @@ class NewsApiController extends Controller
         $sources = $request->get('sources');
         $categories = $request->get('categories');
         $from = $request->get('from');
+        $pageSize = $request->get('page');
+        $page = $request->get('page');
         $to = $request->get('to');
         $sortBy = $request->get('sortBy');
 
@@ -36,6 +38,8 @@ class NewsApiController extends Controller
                 'categories' => $categories,
                 'from' => $from,
                 'to' => $to,
+                'pageSize' => $pageSize,
+                'page' => $page,
                 'sortBy' => $sortBy,
             ],
         ]);

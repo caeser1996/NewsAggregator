@@ -8,7 +8,13 @@ const NewsAggregator = () => {
     const [sources, setSources] = useState([]);
     const [categories, setCategories] = useState([]);
     const [authors, setAuthors] = useState([]);
+
+
     const [selectedProvider, setSelectedProvider] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
+
+    const [selectedAuthors, setSelectedAuthors] = useState('');
+
     const [selectedSource, setSelectedSource] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [filterDate, setFilterDate] = useState('');
@@ -35,10 +41,11 @@ const NewsAggregator = () => {
         if (selectedSource) {
             let articlesUrl = '';
             if (selectedProvider === 'newsapi') {
-                articlesUrl = `http://localhost:8000/api/news/search?provider=${selectedProvider}&q=${searchQuery}`;
+                articlesUrl = `http://localhost:8000/api/news/search?provider=${selectedProvider}&q=${searchQuery}&sources=${selectedSource}&categories=${selectedCategory}&to=${filterDate}`;
             } else if (selectedProvider === 'guardian') {
-                articlesUrl = `http://localhost:8000/api/news/search?provider=${selectedProvider}&q=${searchQuery}`;
+                articlesUrl = `http://localhost:8000/api/news/search?provider=${selectedProvider}&q=${searchQuery}&to-date=${filterDate}`;
             }
+            setArticles([]);
             axios.get(articlesUrl).then((response) => {
                 if (selectedProvider === 'newsapi') {
                     setArticles(response.data.articles.articles);
@@ -47,7 +54,7 @@ const NewsAggregator = () => {
                 }
             });
         }
-    }, [selectedSource, selectedProvider, searchQuery]);
+    }, [selectedSource, selectedProvider, searchQuery, selectedAuthors,filterDate,selectedCategory]);
 
     useEffect(() => {
         // Fetch the categories and authors based on the selected provider
@@ -80,9 +87,15 @@ const NewsAggregator = () => {
     }, [selectedProvider]);
 
     const handleProviderChange = (event) => {
-        setSelectedProvider(event.target.value);
+        setSelectedProvider('');
         setSelectedSource('');
-        setSources([]);
+        setSearchQuery('');
+        setFilterDate('');
+        setArticles([]);
+        setCategories([]);
+        setAuthors([]);
+        setSelectedProvider(event.target.value);
+    
     };
 
     const handleSourceChange = (event) => {
@@ -98,6 +111,7 @@ const NewsAggregator = () => {
         const filteredArticles = articles.filter(
             (article) => article.category === event.target.value
         );
+        setSelectedCategory(event.target.value)
         setArticles(filteredArticles);
     };
 
@@ -106,6 +120,7 @@ const NewsAggregator = () => {
         const filteredArticles = articles.filter(
             (article) => article.author === event.target.value
         );
+        setSelectedAuthors(event.target.value)
         setArticles(filteredArticles);
     };
 
@@ -142,103 +157,103 @@ const NewsAggregator = () => {
                 <div>
                     <Card>
                         <Card.Body>
-                        <Col>
-                        <Form>
-                            <Form.Group controlId="providerSelect">
-                                <Form.Label>Select Provider:</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    value={selectedProvider}
-                                    onChange={handleProviderChange}
-                                >
-                                    <option value="">Select a provider...</option>
-                                    <option value="newsapi">NewsAPI</option>
-                                    <option value="guardian">The Guardian</option>
-                                </Form.Control>
-                            </Form.Group>
-                            {selectedProvider && (
-                                <Form.Group controlId="sourceSelect">
-                                    <Form.Label>Select Source:</Form.Label>
-                                    <Form.Control
-                                        as="select"
-                                        value={selectedSource}
-                                        onChange={handleSourceChange}
-                                    >
-                                        <option value="">Select a source...</option>
-                                        {sources.map((source) => (
-                                            <option
-                                                key={
-                                                    selectedProvider === 'newsapi'
-                                                        ? source.id
-                                                        : source.id
-                                                }
-                                                value={
-                                                    selectedProvider === 'newsapi'
-                                                        ? source.id
-                                                        : source.id
-                                                }
+                            <Col>
+                                <Form>
+                                    <Form.Group controlId="providerSelect">
+                                        <Form.Label>Select Provider:</Form.Label>
+                                        <Form.Control
+                                            as="select"
+                                            value={selectedProvider}
+                                            onChange={handleProviderChange}
+                                        >
+                                            <option value="">Select a provider...</option>
+                                            <option value="newsapi">NewsAPI</option>
+                                            <option value="guardian">The Guardian</option>
+                                        </Form.Control>
+                                    </Form.Group>
+                                    {selectedProvider && (
+                                        <Form.Group controlId="sourceSelect">
+                                            <Form.Label>Select Source:</Form.Label>
+                                            <Form.Control
+                                                as="select"
+                                                value={selectedSource}
+                                                onChange={handleSourceChange}
                                             >
-                                                {selectedProvider === 'newsapi'
-                                                    ? source.id
-                                                    : source.name}
-                                            </option>
-                                        ))}
-                                    </Form.Control>
-                                </Form.Group>
-                            )}
-                            <Form.Group controlId="searchInput">
-                                <Form.Label>Search Articles:</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    value={searchQuery}
-                                    onChange={handleSearchChange}
-                                />
-                            </Form.Group>
-                            <Form.Group controlId="dateSelect">
-                                <Form.Label>Filter by Date:</Form.Label>
-                                <Form.Control type="date" onChange={handleDateChange} />
-                            </Form.Group>
-                            <Form.Group controlId="categorySelect">
-                                <Form.Label>Select Category:</Form.Label>
-                                <Form.Control as="select" onChange={handleCategoryChange}>
-                                    <option value="">All</option>
-                                    {categories.map((category) => (
-                                        <option key={category} value={category}>
-                                            {category}
-                                        </option>
-                                    ))}
-                                </Form.Control>
-                            </Form.Group>
-                            <Form.Group controlId="authorSelect">
-
-
-
-                                {selectedProvider === 'newsapi' ? (
-                                    <div></div>
-                                ) : (
-                                    <div>
-                                        <Form.Label>Select Author:</Form.Label>
-                                        <Form.Control as="select" onChange={handleAuthorChange}>
+                                                <option value="">Select a source...</option>
+                                                {sources.map((source) => (
+                                                    <option
+                                                        key={
+                                                            selectedProvider === 'newsapi'
+                                                                ? source.id
+                                                                : source.id
+                                                        }
+                                                        value={
+                                                            selectedProvider === 'newsapi'
+                                                                ? source.id
+                                                                : source.id
+                                                        }
+                                                    >
+                                                        {selectedProvider === 'newsapi'
+                                                            ? source.id
+                                                            : source.name}
+                                                    </option>
+                                                ))}
+                                            </Form.Control>
+                                        </Form.Group>
+                                    )}
+                                    <Form.Group controlId="searchInput">
+                                        <Form.Label>Search Articles:</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            value={searchQuery}
+                                            onChange={handleSearchChange}
+                                        />
+                                    </Form.Group>
+                                    <Form.Group controlId="dateSelect">
+                                        <Form.Label>Filter by Date:</Form.Label>
+                                        <Form.Control type="date" onChange={handleDateChange} />
+                                    </Form.Group>
+                                    <Form.Group controlId="categorySelect">
+                                        <Form.Label>Select Category:</Form.Label>
+                                        <Form.Control as="select" value={selectedCategory} onChange={handleCategoryChange}>
                                             <option value="">All</option>
-                                            {authors.map((author) => (
-                                                <option key={author} value={author}>
-                                                    {author}
+                                            {categories.map((category) => (
+                                                <option key={category} value={category}>
+                                                    {category}
                                                 </option>
                                             ))}
                                         </Form.Control>
-                                    </div>
+                                    </Form.Group>
+                                    <Form.Group controlId="authorSelect">
 
-                                )}
 
-                            </Form.Group>
-                            <Button variant="primary" className='mt-2' onClick={handleReset}>
-                                Reset
-                            </Button>
-                        </Form>
-                    </Col>
+
+                                        {selectedProvider === 'newsapi' ? (
+                                            <div></div>
+                                        ) : (
+                                            <div>
+                                                <Form.Label>Select Author:</Form.Label>
+                                                <Form.Control as="select" value={selectedAuthors} onChange={handleAuthorChange}>
+                                                    <option value="">All</option>
+                                                    {authors.map((author) => (
+                                                        <option key={author} value={author}>
+                                                            {author}
+                                                        </option>
+                                                    ))}
+                                                </Form.Control>
+                                            </div>
+
+                                        )}
+
+                                    </Form.Group>
+                                    <Button variant="primary" className='mt-2' onClick={handleReset}>
+                                        Reset
+                                    </Button>
+                                </Form>
+                            </Col>
                         </Card.Body>
                     </Card>
-                    
+
                 </div>
                 <Col>
                     {selectedProvider === 'newsapi' ? (
@@ -261,11 +276,17 @@ const NewsAggregator = () => {
                         <ul className="list-group">
                             {personalizedArticles.map((article) => (
                                 <div>
-                                    <li key={article.url} className="list-group-item">
-                                        <h2>{article.webTitle}</h2>
-                                        <p>{article.sectionName}</p>
-                                        <p>{article.webPublicationDate}</p>
-                                        <p>{article.webUrl}</p>
+                                    <li key={article.webUrl} className="list-group-item">
+                                    <div>
+                                        <a href={article.webUrl}>{article.webTitle}</a>
+                                        <br />
+                                        <small>
+                                            {article.sectionName} | {article.webPublicationDate}
+                                        </small>
+                                        <br />
+                                        <small>{article.webUrl}</small>
+                                    </div>
+                                      
                                     </li>
                                 </div>
                             ))}
