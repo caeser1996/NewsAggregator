@@ -27,7 +27,7 @@ class GuardianApiController extends Controller
         $from = $request->get('from-date');
         $to = $request->get('to-date');
         $sort = $request->get('sort-by');
-        $pageSize = $request->get('page-size');
+        $pageSize = $request->get('pageSize');
         $page = $request->get('page');
         $order = $request->get('order-by');
         $source = $request->get('source');

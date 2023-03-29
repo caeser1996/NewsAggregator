@@ -37,6 +37,7 @@
     .list-group {
         max-height: 80vh   ; /* set the max height of the list group to enable scrolling */
         overflow-y: auto; /* enable vertical scrolling for the list group */
+        border: 1px solid black;
       }
       
       .form-group {
