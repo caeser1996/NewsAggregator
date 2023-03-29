@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Container, Form, Row } from 'react-bootstrap';
+import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
 import './NewsAggregator.css';
 
 const NewsAggregator = () => {
@@ -68,8 +68,8 @@ const NewsAggregator = () => {
                     setCategories(categoriesResponse.data.categories.map((source) => source.name));
                 }
             })
-        
-            axios.get(authorsUrl)
+
+        axios.get(authorsUrl)
             .then((authorsResponse) => {
                 if (selectedProvider === 'newsapi') {
                     setAuthors(authorsResponse.data.authors.map((source) => source));
@@ -120,6 +120,9 @@ const NewsAggregator = () => {
         setSearchQuery('');
         setFilterDate('');
         setArticles([]);
+        setCategories([]);
+        setAuthors([]);
+
     };
 
     const filteredArticles = articles.filter((article) => {
@@ -133,10 +136,13 @@ const NewsAggregator = () => {
         return article
     });
     return (
-        <div className="news-aggregator">
-            <Container className="mt-4">
-                <Row>
-                    <Col md12>
+        <Container className="mt-4">
+            <Row>
+
+                <div>
+                    <Card>
+                        <Card.Body>
+                        <Col>
                         <Form>
                             <Form.Group controlId="providerSelect">
                                 <Form.Label>Select Provider:</Form.Label>
@@ -225,47 +231,50 @@ const NewsAggregator = () => {
                                 )}
 
                             </Form.Group>
-                            <Button variant="primary" onClick={handleReset}>
+                            <Button variant="primary" className='mt-2' onClick={handleReset}>
                                 Reset
                             </Button>
                         </Form>
                     </Col>
-                    <Col>
-                        {selectedProvider === 'newsapi' ? (
-                            <ul className="list-group">
-                                {personalizedArticles.map((article) => (
-                                    <li key={article.url} className="list-group-item">
-                                        <div>
-                                            <a href={article.url}>{article.title}</a>
-                                            <br />
-                                            <small>
-                                                {article.author} | {article.publishedAt}
-                                            </small>
-                                            <br />
-                                            <small>{article.description}</small>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <ul className="list-group">
-                                {personalizedArticles.map((article) => (
+                        </Card.Body>
+                    </Card>
+                    
+                </div>
+                <Col>
+                    {selectedProvider === 'newsapi' ? (
+                        <ul className="list-group">
+                            {personalizedArticles.map((article) => (
+                                <li key={article.url} className="list-group-item">
                                     <div>
-                                        <li key={article.url} className="list-group-item">
-                                            <h2>{article.webTitle}</h2>
-                                            <p>{article.sectionName}</p>
-                                            <p>{article.webPublicationDate}</p>
-                                            <p>{article.webUrl}</p>
-                                        </li>
+                                        <a href={article.url}>{article.title}</a>
+                                        <br />
+                                        <small>
+                                            {article.author} | {article.publishedAt}
+                                        </small>
+                                        <br />
+                                        <small>{article.description}</small>
                                     </div>
-                                ))}
-                            </ul>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <ul className="list-group">
+                            {personalizedArticles.map((article) => (
+                                <div>
+                                    <li key={article.url} className="list-group-item">
+                                        <h2>{article.webTitle}</h2>
+                                        <p>{article.sectionName}</p>
+                                        <p>{article.webPublicationDate}</p>
+                                        <p>{article.webUrl}</p>
+                                    </li>
+                                </div>
+                            ))}
+                        </ul>
 
-                        )}
-                    </Col>
-                </Row>
-            </Container>
-        </div>
+                    )}
+                </Col>
+            </Row>
+        </Container>
     );
 };
 

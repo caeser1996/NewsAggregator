@@ -34,3 +34,15 @@
     .form-group select {
     width: 100%;
     }
+    .list-group {
+        max-height: 100vh   ; /* set the max height of the list group to enable scrolling */
+        overflow-y: auto; /* enable vertical scrolling for the list group */
+      }
+      
+      .form-group {
+        position: sticky; /* make the form group sticky */
+        top: 10px; /* set the top position for the sticky form group */
+        background-color: white; /* set the background color of the sticky form group to white */
+        z-index: 1; /* set the z-index to ensure that the sticky form group appears above the list group */
+      }
+      

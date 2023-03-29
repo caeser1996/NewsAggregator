@@ -1,9 +1,10 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import NewsAggregator from './components/NewsAggregator';
 
 function App() {
   return (
-    <div className="App">
+    <div  >
      <NewsAggregator/>
     </div>
   );
