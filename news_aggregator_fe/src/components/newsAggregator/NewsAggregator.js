@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Form, Modal, Row } from 'react-bootstrap';
+import SaveSearches from '../saveSearch/SaveSearches';
 import './NewsAggregator.css';
-import SaveSearches from './SaveSearches';
 
 const NewsAggregator = () => {
     const [articles, setArticles] = useState([]);
@@ -39,11 +39,14 @@ const NewsAggregator = () => {
 
     useEffect(() => {
         // Fetch the articles based on the selected source, search query, and page number
-        if (selectedSource) {
+        if (selectedProvider) {
             let articlesUrl = '';
             if (selectedProvider === 'newsapi') {
                 articlesUrl = `http://localhost:8000/api/news/search?provider=${selectedProvider}&q=${searchQuery}&sources=${selectedSource}&categories=${selectedCategory}&to=${filterDate}&pageSize=${pageSize}&page=${page}`;
             } else if (selectedProvider === 'guardian') {
+                articlesUrl = `http://localhost:8000/api/news/search?provider=${selectedProvider}&q=${searchQuery}&to-date=${filterDate}&pageSize=${pageSize}&page=${page}`;
+            }
+            else {
                 articlesUrl = `http://localhost:8000/api/news/search?provider=${selectedProvider}&q=${searchQuery}&to-date=${filterDate}&pageSize=${pageSize}&page=${page}`;
             }
             axios.get(articlesUrl).then((response) => {
@@ -51,6 +54,9 @@ const NewsAggregator = () => {
                     setArticles([...articles, ...response.data.articles.articles]);
                 } else if (selectedProvider === 'guardian') {
                     setArticles([...articles, ...response.data.articles.response.results]);
+                }
+                else if (selectedProvider === 'nytimes') {
+                    setArticles([...articles, ...response.data.articles.response.docs]);
                 }
             });
         }
@@ -109,7 +115,7 @@ const NewsAggregator = () => {
     function handleSelectSearch(search) {
         // Do something with the selected search
         console.log(search)
-      }
+    }
     const handleCategoryChange = (event) => {
         // Filter the articles based on the selected category
         setSelectedCategory(event.target.value)
@@ -181,6 +187,7 @@ const NewsAggregator = () => {
                                             >
                                                 <option value="">Select a provider...</option>
                                                 <option value="newsapi">NewsAPI</option>
+                                                <option value="nytimes">NYTIMES</option>
                                                 <option value="guardian">The Guardian</option>
                                             </Form.Control>
                                         </Form.Group>
@@ -294,37 +301,42 @@ const NewsAggregator = () => {
                                 </li>
                             ))}
                         </ul>
+                    ) : selectedProvider === 'nytimes' ? (
+                        <ul className="list-group">
+                            {personalizedArticles.slice(0, page * pageSize).map((article) => (
+                                <div>
+                                    <li key={article.web_url} className="list-group-item">
+                                        <div>
+                                            <a href={article.web_url}>{article.headline.main}</a>
+                                            <br />
+                                            <small>
+                                                {article.section_name} | {article.pub_date}
+                                            </small>
+                                            <br />
+                                            <small>{article.web_url}</small>
+                                        </div>
+                                    </li>
+                                </div>
+                            ))}
+                        </ul>
                     ) : (
                         <ul className="list-group">
                             {personalizedArticles.slice(0, page * pageSize).map((article) => (
                                 <div>
-                                    <li key={article.webUrl} className="list-group-item">
+                                    <li key={article._id} className="list-group-item">
                                         <div>
-                                            <a href={article.webUrl}>{article.webTitle}</a>
+                                            <a href={article.web_url}>{article.headline.main}</a>
                                             <br />
                                             <small>
-                                                {article.sectionName} | {article.webPublicationDate}
+                                                {article.source} | {article.pub_date}
                                             </small>
                                             <br />
-                                            <small>{article.webUrl}</small>
+                                            <small>{article.snippet}</small>
                                         </div>
-
                                     </li>
-
                                 </div>
                             ))}
                         </ul>
-
-                    )}
-                    {personalizedArticles.length > page && (
-                        <div className='bottomLoad'>
-                            <Button variant="primary" className="mt-2" onClick={loadMore}>
-                                Load More
-                            </Button>
-                        </div>
-                    )}
-                    {personalizedArticles.length <= 0 && (
-                        <div>Select sidebar options to load Articles</div>
                     )}
                 </Col>
                 <Modal show={showSaveModal} onHide={() => setShowSaveModal(false)}>
@@ -367,7 +379,7 @@ const NewsAggregator = () => {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-                            
+
             </Row>
 
         </Container>

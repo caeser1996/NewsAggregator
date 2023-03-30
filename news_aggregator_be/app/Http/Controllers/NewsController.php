@@ -18,6 +18,8 @@ class NewsController extends Controller
             $controller = new NewsApiController();
         } else if ($provider == 'guardian') {
             $controller = new GuardianApiController();
+        } else if ($provider == 'nytimes') {
+            $controller = new NyTimesController();
         } else {
             return response()->json(['message' => 'Invalid API provider']);
         }
@@ -75,7 +77,7 @@ class NewsController extends Controller
     {
         $provider = $request->get('provider');
 
-     if ($provider == 'guardian') {
+        if ($provider == 'guardian') {
             $url = 'https://content.guardianapis.com/sections';
             $params = [
                 'api-key' => env('GUARDIAN_API_KEY'),
@@ -92,7 +94,7 @@ class NewsController extends Controller
             $items = array_map($mapping, $data->response->results);
         }
 
-       
+
         if ($provider == 'newsapi') {
             $mapping = function ($item) {
                 return [
@@ -108,15 +110,15 @@ class NewsController extends Controller
                 'science',
                 'sports',
                 'technology',
-              ];
-              $items = array_map($mapping, $data);
-        } 
+            ];
+            $items = array_map($mapping, $data);
+        }
 
-        
+
 
 
         $items = array_unique($items, SORT_REGULAR);
-        
+
 
         return response()->json(['categories' => $items]);
     }
