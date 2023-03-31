@@ -6,6 +6,8 @@ import SaveSearches from '../saveSearch/SaveSearches';
 import './NewsAggregator.css';
 
 const NewsAggregator = () => {
+    const [user, setUser] = useState(null);
+    const [loggedIn, setLoggedIn] = useState(true);
     const [articles, setArticles] = useState([]);
     const [sources, setSources] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -20,10 +22,17 @@ const NewsAggregator = () => {
     const [pageSize, setPageSize] = useState(10); // Set the default page size to 10
     const [savedSearchName, setSavedSearchName] = useState('');
     const [showSaveModal, setShowSaveModal] = useState(false);
-    const [user, setUser] = useState(null);
-    const [loggedIn, setLoggedIn] = useState(false);
 
 
+    useEffect(() => {
+        const udata = localStorage.getItem('user');
+        if (udata === null) {
+            setLoggedIn(false);
+        } else {
+            const odata = JSON.parse(udata);
+            setUser(odata.user);
+        }
+    }, []);
     useEffect(() => {
         // Fetch the available sources from the selected provider
         let providerUrl = '';
@@ -94,25 +103,9 @@ const NewsAggregator = () => {
                 }
             })
     }, [selectedProvider]);
-    useEffect(() => {
-        const udata = localStorage.getItem('user');
-        if (udata) {
-            const odata = JSON.parse(udata);
-            setUser(odata.user);
-            setLoggedIn(true);
-        } else {
-            setLoggedIn(false);
-        }
-       
-    }, []);
-    console.log(loggedIn)
-
     if (!loggedIn) {
         return <Navigate to="/sign-in" />;
-
-
     }
-
     const handleProviderChange = (event) => {
         setSelectedProvider('');
         setSelectedSource('');
@@ -192,11 +185,10 @@ const NewsAggregator = () => {
 
 
     return (
-
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid">
-                    <a className="navbar-brand" href="/dashboard">
+                    <a className="navbar-brand" href="/news">
                         News Aggr
                     </a>
                     <button
@@ -211,7 +203,13 @@ const NewsAggregator = () => {
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
-
+                        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li className="nav-item">
+                                <a className="nav-link active" aria-current="page" href="/news">
+                                    Home
+                                </a>
+                            </li>
+                        </ul>
                         <ul className="navbar-nav">
                             <a className="nav-link" href="/logout">
                                 logout
@@ -436,7 +434,6 @@ const NewsAggregator = () => {
             </Container>
         </div>
     );
-
 };
 
 export default NewsAggregator;

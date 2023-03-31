@@ -30,7 +30,7 @@ export default function Login() {
         if (res.status === 200) {
           setLoggedIn(true);
           localStorage.setItem('user', JSON.stringify(res.data));
-          navigate('/dashboard');
+          navigate('/news');
         }
       })
       .catch(error => {
@@ -43,7 +43,7 @@ export default function Login() {
   }
 
   if (loggedIn) {
-    navigate('/dashboard');
+    navigate('/news');
   }
 
   return (

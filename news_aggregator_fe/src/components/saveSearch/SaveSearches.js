@@ -8,14 +8,14 @@ const SaveSearches = ({ onSelectSearch }) => {
 
   useEffect(() => {
     // Load saved searches from REST API
-    fetch('/api/saved-searches')
+    fetch('http://localhost:8000/api/saved-searches')
       .then((response) => response.json())
       .then((data) => setSavedSearches(data));
   }, []);
 
   const handleDelete = (name) => {
     // Delete saved search from REST API
-    fetch(`/api/saved-searches/${name}`, {
+    fetch(`http://localhost:8000/api/saved-searches/${name}`, {
       method: 'DELETE',
     })
       .then((response) => response.json())
