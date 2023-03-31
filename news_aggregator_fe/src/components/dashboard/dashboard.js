@@ -189,7 +189,7 @@ const Dashboard = () => {
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid">
                     <a className="navbar-brand" href="/dashboard">
-                        React.js and Larevel App
+                        News Aggr
                     </a>
                     <button
                         className="navbar-toggler"
